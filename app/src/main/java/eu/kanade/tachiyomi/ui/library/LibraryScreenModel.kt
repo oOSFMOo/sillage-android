@@ -31,6 +31,7 @@ import eu.kanade.tachiyomi.source.model.SManga
 import eu.kanade.tachiyomi.source.online.HttpSource
 import eu.kanade.tachiyomi.source.online.all.MergedSource
 import eu.kanade.tachiyomi.util.chapter.getNextUnread
+import eu.kanade.tachiyomi.util.chapter.getResumeChapter
 import eu.kanade.tachiyomi.util.removeCovers
 import exh.favorites.FavoritesSyncHelper
 import exh.md.utils.FollowStatus
@@ -718,7 +719,7 @@ class LibraryScreenModel(
             getMergedChaptersByMangaId.await(manga.id, applyScanlatorFilter = true)
         } else {
             getChaptersByMangaId.await(manga.id, applyScanlatorFilter = true)
-        }.getNextUnread(manga, downloadManager, mergedManga)
+        }.getResumeChapter(manga)
         // SY <--
     }
 
@@ -1330,7 +1331,7 @@ class LibraryScreenModel(
 
     /** Returns first unread chapter of a manga */
     suspend fun getFirstUnread(manga: Manga): Chapter? {
-        return getNextChapters.await(manga.id).firstOrNull()
+        return getNextUnreadChapter(manga)
     }
 
     private fun List<LibraryItem>.getGroupedMangaItems(

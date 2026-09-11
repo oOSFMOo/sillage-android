@@ -63,9 +63,28 @@ internal data class CatalogueIndex(
     val document: CatalogueDocument,
     val searchKeys: List<String>,
     val genreKeys: List<Set<String>>,
+    val rankedGenres: List<Pair<String, Int>> = SillageCatalogue.rankGenres(document.series),
 )
 
 internal object SillageCatalogue {
+    fun rankGenres(series: List<CatalogueSeries>): List<Pair<String, Int>> = series
+        .flatMap { it.genres.map(::canonicalGenre).filter(String::isNotBlank).distinct() }
+        .groupingBy { it }.eachCount().toList()
+        .sortedWith(compareByDescending<Pair<String, Int>> { it.second }.thenBy { it.first })
+
+    internal fun canonicalGenre(value: String): String = when (normalize(value)) {
+        "adventure", "aventures", "aventure" -> "Aventure"
+        "martial arts", "art martial", "art martiaux", "arts martiaux" -> "Arts martiaux"
+        "fantasy", "fantaisie" -> "Fantasy"
+        "comedy", "comedie" -> "Comédie"
+        "drama", "drame" -> "Drame"
+        "horror", "horreur" -> "Horreur"
+        "romance" -> "Romance"
+        "action" -> "Action"
+        "isekai" -> "Isekai"
+        "murim" -> "Murim"
+        else -> value.trim().replaceFirstChar { it.titlecase(Locale.FRANCE) }
+    }
     private val mutex = Mutex()
     private var cached: CatalogueIndex? = null
     val revision = kotlinx.coroutines.flow.MutableStateFlow(0)
@@ -132,10 +151,10 @@ internal object SillageCatalogue {
         sort: CatalogueSort,
     ): List<CatalogueSeries> = withContext(Dispatchers.Default) {
         val words = normalize(query).split(' ').filter(String::isNotBlank)
-        val normalizedGenre = normalize(genre)
+        val normalizedGenre = normalize(canonicalGenre(genre))
         val candidates = index.document.series.filterIndexed { position, series ->
             words.all { it in index.searchKeys[position] } &&
-                (genre.isBlank() || index.genreKeys[position].any { matchesGenre(it, normalizedGenre) }) &&
+                (genre.isBlank() || index.genreKeys[position].any { normalize(canonicalGenre(it)) == normalizedGenre }) &&
                 (minimumChapters == 0 || (series.chapters ?: -1) >= minimumChapters)
         }
         when (sort) {

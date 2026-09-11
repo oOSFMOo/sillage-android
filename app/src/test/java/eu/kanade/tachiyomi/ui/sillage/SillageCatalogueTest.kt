@@ -7,6 +7,18 @@ import org.junit.jupiter.api.Test
 
 class SillageCatalogueTest {
     @Test
+    fun `all genres are ranked by distinct series count and aliases count only once`() {
+        val rows = listOf(
+            edition("1", 5).copy(genres = listOf("Adventure", "Aventure", "Murim")),
+            edition("2", 6).copy(genres = listOf("Aventure", "Horror")),
+            edition("3", 7).copy(genres = listOf("Science fiction")),
+        )
+        val genres = SillageCatalogue.rankGenres(rows)
+        assertEquals("Aventure" to 2, genres.first())
+        assertEquals(setOf("Aventure", "Murim", "Horreur", "Science fiction"), genres.map { it.first }.toSet())
+    }
+
+    @Test
     fun `an unavailable detail page cannot erase metadata saved by an earlier import`() {
         val known = edition("1", 120, 8.5).copy(cover = "https://example.org/cover.jpg")
         val incomplete = known.copy(cover = "", genres = emptyList(), chapters = null, rating = null)

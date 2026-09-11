@@ -48,6 +48,7 @@ import eu.kanade.tachiyomi.source.online.MetadataSource
 import eu.kanade.tachiyomi.source.online.all.MergedSource
 import eu.kanade.tachiyomi.ui.reader.setting.ReaderPreferences
 import eu.kanade.tachiyomi.util.chapter.getNextUnread
+import eu.kanade.tachiyomi.util.chapter.getResumeChapter
 import eu.kanade.tachiyomi.util.removeCovers
 import eu.kanade.tachiyomi.util.system.toast
 import exh.debug.DebugToggles
@@ -462,6 +463,7 @@ class MangaScreenModel(
     }
 
     fun fetchAllFromSource(manualFetch: Boolean = true) {
+        if (successState?.isRefreshingData == true) return
         screenModelScope.launch {
             updateSuccessState { it.copy(isRefreshingData = true) }
             fetchAllFromSource(
@@ -506,6 +508,9 @@ class MangaScreenModel(
 
                 if (manualFetch) {
                     downloadNewChapters(update.newChapters)
+                    val resultTime = java.time.LocalTime.now().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss"))
+                    val resultMessage = if (update.newChapters.isEmpty()) "Aucun nouveau chapitre" else "${update.newChapters.size} nouveau(x) chapitre(s)"
+                    screenModelScope.launch { snackbarHostState.showSnackbar("$resultMessage · vérifié à $resultTime") }
                 }
             }
         } catch (_: CancellationException) {
@@ -1138,9 +1143,9 @@ class MangaScreenModel(
     /**
      * Returns the next unread chapter or null if everything is read.
      */
-    fun getNextUnreadChapter(): Chapter? {
+    suspend fun getNextUnreadChapter(): Chapter? {
         val successState = successState ?: return null
-        return successState.chapters.getNextUnread(successState.manga)
+        return successState.chapters.map { it.chapter }.getResumeChapter(successState.manga)
     }
 
     private fun getUnreadChapters(): List<Chapter> {

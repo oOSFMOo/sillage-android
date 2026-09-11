@@ -28,6 +28,7 @@ import androidx.compose.material3.SmallExtendedFloatingActionButton
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.animateFloatingActionButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -45,6 +46,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastAll
 import androidx.compose.ui.util.fastAny
 import androidx.compose.ui.util.fastMap
@@ -108,6 +110,15 @@ import tachiyomi.source.local.isLocal
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
+
+@Composable
+private fun SillageRefreshButton(refreshing: Boolean, onRefresh: () -> Unit) {
+    OutlinedButton(
+        onClick = onRefresh,
+        enabled = !refreshing,
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
+    ) { Text(if (refreshing) "Vérification des chapitres…" else "Vérifier les nouveaux chapitres") }
+}
 
 @Composable
 fun MangaScreen(
@@ -477,6 +488,7 @@ private fun MangaScreenSmallImpl(
                         key = MangaScreenItem.ACTION_ROW,
                         contentType = MangaScreenItem.ACTION_ROW,
                     ) {
+                        SillageRefreshButton(state.isRefreshingData, onRefresh)
                         MangaActionRow(
                             favorite = state.manga.favorite,
                             trackingCount = state.trackingCount,
@@ -784,6 +796,7 @@ fun MangaScreenLargeImpl(
                             onCoverClick = onCoverClicked,
                             doSearch = onSearch,
                         )
+                        SillageRefreshButton(state.isRefreshingData, onRefresh)
                         MangaActionRow(
                             favorite = state.manga.favorite,
                             trackingCount = state.trackingCount,

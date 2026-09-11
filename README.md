@@ -4,7 +4,7 @@ Une bibliothèque de manhua et webtoons pour lire sur Android, sans dépendre d�
 
 ## Télécharger
 
-**[Télécharger la version Android](https://github.com/oOSFMOo/sillage-android/releases/tag/v1.0.0)**
+**[Télécharger la version Android 1.1](https://github.com/oOSFMOo/sillage-android/releases/tag/v1.1.0)**
 
 Dans les fichiers de la version, prends **Sillage-Android-1.0.apk**. Le paquet **Sillage-Android-et-extensions.zip** contient aussi les cinq extensions préparées et le guide.
 
@@ -19,10 +19,13 @@ Dans les fichiers de la version, prends **Sillage-Android-1.0.apk**. Le paquet *
 - Import initial automatique d’une nouvelle extension installée et approuvée, avec reprise en cas d’interruption.
 - Bouton global de recherche des nouveautés dans les flux récents, sans recommencer le catalogue complet.
 - Actualisation des chapitres à l’ouverture de chaque série, favoris, historique et lecture hors connexion après téléchargement.
+- Reprise de lecture basée sur le dernier chapitre réellement consulté : un chapitre 30 en cours ne revient plus au chapitre 1 non lu.
+- Vérification automatique des favoris tous les 7 jours, avec bouton manuel et heure/résultat détaillés.
+- Tous les genres disponibles sont listés par importance, avec leur nombre de séries.
 
 ## État de la version
 
-Cette première version compilée est destinée à être testée. **16 tests automatisés passent**, dont le décodage du catalogue complet, la conservation des métadonnées lors d’une panne, le regroupement et la migration des lectures. Le contenu du catalogue dans l’APK et sa signature ont été vérifiés. Le test sur téléphone réel n’a pas encore été réalisé ; l’émulateur de préparation n’a pas démarré correctement.
+Cette version compilée est destinée à être testée. **17 tests automatisés passent**, dont le décodage du catalogue complet, la conservation des métadonnées lors d’une panne, le regroupement/filtrage, la migration des lectures et la reprise au dernier chapitre consulté. Le contenu du catalogue dans l’APK et sa signature ont été vérifiés. Le test sur téléphone réel n’a pas encore été réalisé ; l’émulateur de préparation n’a pas démarré correctement.
 
 Les sites et extensions peuvent changer ou être indisponibles. Certaines métadonnées du catalogue initial sont encore inconnues. Les nouvelles notes ne peuvent être renseignées que si elles sont fournies ; aucune note n’est inventée. La première vérification d’une source préchargée établit un repère sur ses cinq pages récentes ; les suivantes suivent ce repère. Un changement absent du flux reste à vérifier sur la fiche.
 

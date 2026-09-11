@@ -153,12 +153,12 @@ class BackupRestorer(
             // TODO: optionally trigger online library + tracker update
         }
 
-        Injekt.get<LibraryPreferences>().autoUpdateInterval.set(0)
+        Injekt.get<LibraryPreferences>().autoUpdateInterval.set(168)
         LibraryUpdateJob.setupTask(context)
         if (migration.isLegacyCatalogue) {
             // Imported desktop preferences must not reinstate a global catalogue update.
             Injekt.get<LibraryPreferences>().apply {
-                autoUpdateInterval.set(0)
+                autoUpdateInterval.set(168)
                 autoUpdateDeviceRestrictions.set(emptySet())
                 autoUpdateMangaRestrictions.set(setOf(LibraryPreferences.MANGA_NON_COMPLETED))
                 autoUpdateMetadata.set(false)

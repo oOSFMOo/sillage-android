@@ -17,10 +17,10 @@ internal object CatalogueStartup {
         scope.launch(Dispatchers.IO) {
             // Runs once even after restoring preferences from another reader.
             val preferences = context.getSharedPreferences("sillage", Context.MODE_PRIVATE)
-            if (!preferences.getBoolean("manual-updates-v1", false)) {
-                Injekt.get<LibraryPreferences>().autoUpdateInterval.set(0)
+            if (!preferences.getBoolean("weekly-favourites-v2", false)) {
+                Injekt.get<LibraryPreferences>().autoUpdateInterval.set(168)
                 LibraryUpdateJob.setupTask(context)
-                preferences.edit().putBoolean("manual-updates-v1", true).apply()
+                preferences.edit().putBoolean("weekly-favourites-v2", true).apply()
             }
             val seedSources = SillageCatalogue.load(context).document.series
                 .flatMap { listOf(it) + it.editions }.map { it.sourceId }.toSet()

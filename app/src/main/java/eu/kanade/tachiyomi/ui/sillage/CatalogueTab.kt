@@ -15,6 +15,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -110,6 +113,7 @@ data object CatalogueTab : Tab {
         var sortName by rememberSaveable { mutableStateOf(CatalogueSort.CHAPTERS.name) }
         var showFilters by rememberSaveable { mutableStateOf(false) }
         var showSources by rememberSaveable { mutableStateOf(false) }
+        var showGenres by rememberSaveable { mutableStateOf(false) }
         var filtered by remember { mutableStateOf<List<CatalogueSeries>>(emptyList()) }
         var filtering by remember { mutableStateOf(true) }
         var opening by remember { mutableStateOf<String?>(null) }
@@ -119,6 +123,8 @@ data object CatalogueTab : Tab {
         val enabledLanguages = Injekt.get<eu.kanade.domain.source.service.SourcePreferences>().enabledLanguages.get() + setOf("fr", "en", "all")
         val availableSources = extensions.flatMap { it.sources }.filter { it.lang in enabledLanguages }
         var sourceStatus by remember { mutableStateOf<Map<Long, String>>(emptyMap()) }
+        var refreshSummary by remember { mutableStateOf("Aucune vérification effectuée") }
+        var runningSources by remember { mutableStateOf(0) }
         val sort = CatalogueSort.valueOf(sortName)
         val countFormat = remember { NumberFormat.getIntegerInstance(Locale.FRANCE) }
 
@@ -132,10 +138,25 @@ data object CatalogueTab : Tab {
                 loadError = true
             }
         }
-        LaunchedEffect(showSources, extensions) {
-            while (showSources) {
-                sourceStatus = withContext(Dispatchers.IO) {
-                    CatalogueStore(context).use { store -> availableSources.associate { it.id to store.state(it.id).message } }
+        LaunchedEffect(extensions) {
+            while (true) {
+                val snapshot = withContext(Dispatchers.IO) {
+                    val messages = CatalogueStore(context).use { store -> availableSources.associate { it.id to store.state(it.id).message } }
+                    val active = availableSources.count { source ->
+                        androidx.work.WorkManager.getInstance(context).getWorkInfosForUniqueWork("sillage-import-${source.id}").get().any { !it.state.isFinished }
+                    }
+                    val last = context.getSharedPreferences("sillage-refresh-results", android.content.Context.MODE_PRIVATE).getLong("last-finished", 0)
+                    Triple(messages, active, last)
+                }
+                sourceStatus = snapshot.first
+                runningSources = snapshot.second
+                val failures = sourceStatus.values.count { it.contains("Échec") || it.contains("Délai dépassé") }
+                refreshSummary = when {
+                    availableSources.isEmpty() -> "Ajoute ou active une source pour actualiser"
+                    runningSources > 0 -> "$runningSources source(s) en cours ou en attente du réseau"
+                    failures > 0 -> "$failures source(s) en échec · voir le détail"
+                    snapshot.third > 0 -> "Dernière fin : " + java.time.Instant.ofEpochMilli(snapshot.third).atZone(java.time.ZoneId.systemDefault()).format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy à HH:mm:ss"))
+                    else -> "Catalogue préchargé · pas encore vérifié sur ce téléphone"
                 }
                 delay(1500)
             }
@@ -180,8 +201,9 @@ data object CatalogueTab : Tab {
                         Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
-                        listOf("", "Murim", "Isekai", "Arts martiaux", "Aventure").forEach { item ->
-                            FilterChip(selected = genre == item, onClick = { genre = item }, label = { Text(item.ifBlank { "Tous" }) })
+                        TextButton(onClick = { showGenres = true }) { Text("Genres (${index?.rankedGenres?.size ?: 0})") }
+                        (listOf("" to 0) + index?.rankedGenres.orEmpty()).forEach { (item, count) ->
+                            FilterChip(selected = genre == item, onClick = { genre = item }, label = { Text(if (item.isBlank()) "Tous" else "$item · $count") })
                         }
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -222,12 +244,13 @@ data object CatalogueTab : Tab {
                     verticalArrangement = Arrangement.spacedBy(18.dp),
                 ) {
                     item(span = { GridItemSpan(maxLineSpan) }) {
-                        CatalogueIntro(
-                            generatedAt = index!!.document.generatedAt,
+                        CatalogueControls(
+                            summary = refreshSummary,
+                            running = runningSources > 0,
                             onSources = { showSources = true },
                             onUpdate = {
                                 availableSources.forEach { CatalogueImportWorker.enqueue(context, it, latest = true) }
-                                showSources = true
+                                scope.launch { snackbar.showSnackbar(if (availableSources.isEmpty()) "Aucune source active. Ouvre Sources pour en ajouter." else "Demande envoyée à ${availableSources.size} source(s). Le résultat apparaîtra ici.") }
                             },
                         )
                     }
@@ -266,7 +289,7 @@ data object CatalogueTab : Tab {
         }
 
         if (showFilters) CatalogueFilters(
-            genres = index?.document?.series?.flatMap { it.genres }?.distinct()?.sorted().orEmpty(),
+            genres = index?.rankedGenres?.map { it.first }.orEmpty(),
             genre = genre,
             onGenre = { genre = it },
             minimum = minimum,
@@ -274,6 +297,24 @@ data object CatalogueTab : Tab {
             onMinimum = { minimum = it },
             onSort = { sortName = it.name },
             onDismiss = { showFilters = false },
+        )
+        if (showGenres) AlertDialog(
+            onDismissRequest = { showGenres = false },
+            title = { Text("Tous les genres") },
+            text = {
+                Column {
+                    Text("Classés par nombre de séries", style = MaterialTheme.typography.bodySmall)
+                    LazyColumn(Modifier.heightIn(max = 440.dp)) {
+                        item { TextButton(onClick = { genre = ""; showGenres = false }) { Text("Tous les genres") } }
+                        items(index?.rankedGenres.orEmpty(), key = { it.first }) { (label, count) ->
+                            TextButton(onClick = { genre = label; showGenres = false }, modifier = Modifier.fillMaxWidth()) {
+                                Text(label, modifier = Modifier.weight(1f)); Text(countFormat.format(count))
+                            }
+                        }
+                    }
+                }
+            },
+            confirmButton = { TextButton(onClick = { showGenres = false }) { Text("Fermer") } },
         )
         if (showSources) AlertDialog(
             onDismissRequest = { showSources = false },
@@ -329,18 +370,15 @@ data object CatalogueTab : Tab {
 }
 
 @Composable
-private fun CatalogueIntro(generatedAt: String, onSources: () -> Unit, onUpdate: () -> Unit) {
-    Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)) {
-        Column(Modifier.padding(16.dp)) {
-            Text("Explore ici. Retrouve tes favoris dans Mes lectures.", style = MaterialTheme.typography.titleSmall)
-            Text(
-                "Le suivi des nouveaux chapitres concerne tes favoris. Ce catalogue est un instantané du ${generatedAt.take(10).split('-').reversed().joinToString(".")}. Notes et nombres de chapitres sont indicatifs ; les valeurs absentes restent inconnues.",
-                modifier = Modifier.padding(top = 6.dp),
-                style = MaterialTheme.typography.bodySmall,
-            )
-            TextButton(onClick = onSources) { Text("Sources et nouveautés →") }
-            Button(onClick = onUpdate) { Text("Actualiser les nouveautés") }
+private fun CatalogueControls(summary: String, running: Boolean, onSources: () -> Unit, onUpdate: () -> Unit) {
+    Column {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            TextButton(onClick = onUpdate, enabled = !running) { Text(if (running) "Actualisation…" else "Actualiser") }
+            Spacer(Modifier.weight(1f))
+            TextButton(onClick = onSources) { Text("Sources et résultats") }
         }
+        Text(summary, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        if (running) LinearProgressIndicator(Modifier.fillMaxWidth().padding(top = 6.dp))
     }
 }
 

@@ -37,6 +37,8 @@ class CatalogueImportWorker(context: Context, parameters: WorkerParameters) : Co
             val started = System.currentTimeMillis()
             val checkpoints = applicationContext.getSharedPreferences("sillage-import-checkpoints", Context.MODE_PRIVATE)
             val checkpointKey = "$id-${if (state.complete) "latest" else "initial"}"
+            var checked = checkpoints.getInt("$checkpointKey-checked", 0)
+            var incomplete = checkpoints.getInt("$checkpointKey-incomplete", 0)
             var page = if (state.complete) checkpoints.getInt("$checkpointKey-page", 1) else state.page
             var firstPage = checkpoints.getStringSet("$checkpointKey-head", emptySet()).orEmpty().toList()
             val previousFrontier = state.frontier.toSet()
@@ -78,13 +80,16 @@ class CatalogueImportWorker(context: Context, parameters: WorkerParameters) : Co
                                     .await(detail.chapters, local, source)
                             }
                         } catch (_: kotlinx.coroutines.TimeoutCancellationException) {
+                            incomplete += 1
                             // A slow title must not cancel the entire source import.
                         } catch (e: CancellationException) { throw e
-                        } catch (_: Exception) { /* Keep the card; opening it retries metadata and chapters. */ }
+                        } catch (_: Exception) { incomplete += 1 }
                         entries.add(entry)
                         // A long page cannot erase already fetched cards if Android stops the worker.
                         store.save(listOf(entry))
-                        checkpoints.edit().putInt("$checkpointKey-offset", position + 1).apply()
+                        checked += 1
+                        checkpoints.edit().putInt("$checkpointKey-offset", position + 1)
+                            .putInt("$checkpointKey-checked", checked).putInt("$checkpointKey-incomplete", incomplete).apply()
                     }
                     SillageCatalogue.invalidate()
                     val reachedFrontier = state.complete && keys.any { it in previousFrontier }
@@ -92,9 +97,14 @@ class CatalogueImportWorker(context: Context, parameters: WorkerParameters) : Co
                     if (!result.hasNextPage || keys.isEmpty() || reachedFrontier || baseline) {
                         state = state.copy(complete = true, page = 1,
                             frontier = if (state.complete) firstPage else emptyList(),
-                            message = "${source.name} · ${if (baseline) "Première vérification : 5 pages récentes" else "Vérification terminée"} · ${java.time.LocalDateTime.now().withNano(0)}")
+                            message = "${source.name} · Terminé le ${java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy à HH:mm:ss"))} · $checked séries vérifiées" +
+                                (if (incomplete > 0) " · $incomplete fiches incomplètes (source indisponible)" else "") +
+                                (if (baseline) " · 5 pages récentes" else ""))
                         store.state(id, state)
-                        checkpoints.edit().remove("$checkpointKey-page").remove("$checkpointKey-offset").remove("$checkpointKey-head").apply()
+                        applicationContext.getSharedPreferences("sillage-refresh-results", Context.MODE_PRIVATE).edit()
+                            .putLong("last-finished", System.currentTimeMillis()).apply()
+                        checkpoints.edit().remove("$checkpointKey-page").remove("$checkpointKey-offset").remove("$checkpointKey-head")
+                            .remove("$checkpointKey-checked").remove("$checkpointKey-incomplete").apply()
                         return@withContext Result.success()
                     }
                     page += 1
