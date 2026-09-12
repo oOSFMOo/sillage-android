@@ -106,6 +106,7 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
                 response.close()
                 throw Exception("Unsuccessful response")
             }
+            SillageApkVerifier.verify(context, apkFile)
             notifier.cancel()
             notifier.promptInstall(apkFile.getUriCompat(context))
         } catch (e: Exception) {

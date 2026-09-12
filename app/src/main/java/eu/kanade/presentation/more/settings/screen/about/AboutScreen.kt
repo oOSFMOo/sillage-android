@@ -36,6 +36,7 @@ import eu.kanade.tachiyomi.util.lang.toDateTimestampString
 import eu.kanade.tachiyomi.util.system.copyToClipboard
 import eu.kanade.tachiyomi.util.system.isPreviewBuildType
 import eu.kanade.tachiyomi.util.system.toast
+import eu.kanade.tachiyomi.util.storage.getUriCompat
 import exh.syDebugVersion
 import kotlinx.coroutines.launch
 import logcat.LogPriority
@@ -105,7 +106,8 @@ object AboutScreen : Screen() {
                 if (BuildConfig.INCLUDE_UPDATER) {
                     item {
                         TextPreferenceWidget(
-                            title = stringResource(MR.strings.check_for_updates),
+                            title = "Vérifier les mises à jour de Sillage",
+                            subtitle = "GitHub · vérification automatique au lancement, au plus une fois par jour",
                             widget = {
                                 AnimatedVisibility(visible = isCheckingUpdates) {
                                     CircularProgressIndicator(
@@ -135,6 +137,26 @@ object AboutScreen : Screen() {
                                             },
                                         )
                                     }
+                                }
+                            },
+                        )
+                    }
+                }
+
+                if (BuildConfig.INCLUDE_UPDATER) {
+                    item {
+                        TextPreferenceWidget(
+                            title = "Installer la mise à jour téléchargée",
+                            subtitle = "Après le téléchargement · Android demandera ta confirmation",
+                            onPreferenceClick = {
+                                scope.launch {
+                                    try {
+                                        val apk = java.io.File(context.externalCacheDir, "update.apk")
+                                        withIOContext { eu.kanade.tachiyomi.data.updater.SillageApkVerifier.verify(context, apk) }
+                                        eu.kanade.tachiyomi.data.notification.NotificationHandler
+                                            .installApkPendingActivity(context, apk.getUriCompat(context)).send()
+                                    } catch (e: kotlinx.coroutines.CancellationException) { throw e
+                                    } catch (e: Exception) { context.toast(e.message ?: "Installation indisponible") }
                                 }
                             },
                         )
@@ -209,7 +231,7 @@ object AboutScreen : Screen() {
                             label = "GitHub",
                             icon = CustomIcons.Github,
                             // SY -->
-                            url = "https://github.com/jobobby04/tachiyomisy",
+                            url = "https://github.com/oOSFMOo/sillage-android",
                             // SY <--
                         )
                     }

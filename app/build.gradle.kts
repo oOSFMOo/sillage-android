@@ -31,8 +31,8 @@ android {
     defaultConfig {
         applicationId = "fr.sillage.reader"
 
-        versionCode = 1002
-        versionName = "1.1.0"
+        versionCode = 1003
+        versionName = "1.2.0"
 
         buildConfigField("String", "UPSTREAM_VERSION", """"0.20.1"""")
 
@@ -66,7 +66,7 @@ android {
 
             matchingFallbacks.add("release")
 
-            buildConfigField("boolean", "INCLUDE_UPDATER", "false")
+            buildConfigField("boolean", "INCLUDE_UPDATER", "true")
         }
         create("benchmark") {
             initWith(getByName("release"))
