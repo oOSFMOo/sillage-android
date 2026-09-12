@@ -151,11 +151,15 @@ data object CatalogueTab : Tab {
                 sourceStatus = snapshot.first
                 runningSources = snapshot.second
                 val failures = sourceStatus.values.count { it.contains("Échec") || it.contains("Délai dépassé") }
+                val partial = sourceStatus.values.count {
+                    it.contains("fiches incomplètes") || it.contains("Vérification partielle") || it.contains("ne fournit pas de flux")
+                }
                 refreshSummary = when {
                     availableSources.isEmpty() -> "Ajoute ou active une source pour actualiser"
                     runningSources > 0 -> "$runningSources source(s) en cours ou en attente du réseau"
                     failures > 0 -> "$failures source(s) en échec · voir le détail"
-                    snapshot.third > 0 -> "Dernière fin : " + java.time.Instant.ofEpochMilli(snapshot.third).atZone(java.time.ZoneId.systemDefault()).format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy à HH:mm:ss"))
+                    partial > 0 -> "$partial source(s) partiellement vérifiée(s) · voir Sources et résultats"
+                    snapshot.third > 0 -> "Dernière source terminée : " + java.time.Instant.ofEpochMilli(snapshot.third).atZone(java.time.ZoneId.systemDefault()).format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy à HH:mm:ss"))
                     else -> "Catalogue préchargé · pas encore vérifié sur ce téléphone"
                 }
                 delay(1500)

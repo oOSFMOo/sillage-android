@@ -42,6 +42,8 @@ class CatalogueImportWorker(context: Context, parameters: WorkerParameters) : Co
             var page = if (state.complete) checkpoints.getInt("$checkpointKey-page", 1) else state.page
             var firstPage = checkpoints.getStringSet("$checkpointKey-head", emptySet()).orEmpty().toList()
             val previousFrontier = state.frontier.toSet()
+            val frontier = SillageUpdateFrontier(previousFrontier,
+                checkpoints.getStringSet("$checkpointKey-seen", emptySet()).orEmpty())
             val seenPages = mutableSetOf<List<String>>()
             try {
                 while (true) {
@@ -92,19 +94,23 @@ class CatalogueImportWorker(context: Context, parameters: WorkerParameters) : Co
                             .putInt("$checkpointKey-checked", checked).putInt("$checkpointKey-incomplete", incomplete).apply()
                     }
                     SillageCatalogue.invalidate()
-                    val reachedFrontier = state.complete && keys.any { it in previousFrontier }
+                    val reachedFrontier = state.complete && frontier.reached(page, keys)
+                    checkpoints.edit().putStringSet("$checkpointKey-seen", frontier.seen.toSet()).apply()
                     val baseline = state.complete && previousFrontier.isEmpty() && page >= 5
-                    if (!result.hasNextPage || keys.isEmpty() || reachedFrontier || baseline) {
+                    val recentLimit = state.complete && page >= 10 && !reachedFrontier
+                    if (!result.hasNextPage || keys.isEmpty() || reachedFrontier || baseline || recentLimit) {
                         state = state.copy(complete = true, page = 1,
                             frontier = if (state.complete) firstPage else emptyList(),
                             message = "${source.name} · Terminé le ${java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy à HH:mm:ss"))} · $checked séries vérifiées" +
                                 (if (incomplete > 0) " · $incomplete fiches incomplètes (source indisponible)" else "") +
+                                (if (recentLimit) " · Vérification partielle : limite de 10 pages récentes atteinte" else "") +
                                 (if (baseline) " · 5 pages récentes" else ""))
                         store.state(id, state)
                         applicationContext.getSharedPreferences("sillage-refresh-results", Context.MODE_PRIVATE).edit()
                             .putLong("last-finished", System.currentTimeMillis()).apply()
                         checkpoints.edit().remove("$checkpointKey-page").remove("$checkpointKey-offset").remove("$checkpointKey-head")
-                            .remove("$checkpointKey-checked").remove("$checkpointKey-incomplete").apply()
+                            .remove("$checkpointKey-checked").remove("$checkpointKey-incomplete")
+                            .remove("$checkpointKey-seen").apply()
                         return@withContext Result.success()
                     }
                     page += 1

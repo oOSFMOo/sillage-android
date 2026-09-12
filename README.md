@@ -6,7 +6,7 @@ Une bibliothèque de manhua et webtoons pour lire sur Android, sans dépendre d�
 
 **[Télécharger la version Android 1.1](https://github.com/oOSFMOo/sillage-android/releases/tag/v1.1.0)**
 
-Dans les fichiers de la version, prends **Sillage-Android-1.0.apk**. Le paquet **Sillage-Android-et-extensions.zip** contient aussi les cinq extensions préparées et le guide.
+Dans les fichiers de la version, prends **Sillage-Android-1.1.apk**. Ouvre-le pour mettre à jour Sillage 1.0 sans désinstaller l’application. Les extensions déjà installées restent utilisables.
 
 [Guide d’installation et de transfert de progression](INSTALLATION.md)
 
@@ -25,9 +25,9 @@ Dans les fichiers de la version, prends **Sillage-Android-1.0.apk**. Le paquet *
 
 ## État de la version
 
-Cette version compilée est destinée à être testée. **17 tests automatisés passent**, dont le décodage du catalogue complet, la conservation des métadonnées lors d’une panne, le regroupement/filtrage, la migration des lectures et la reprise au dernier chapitre consulté. Le contenu du catalogue dans l’APK et sa signature ont été vérifiés. Le test sur téléphone réel n’a pas encore été réalisé ; l’émulateur de préparation n’a pas démarré correctement.
+Cette version est destinée à être testée. Les tests automatisés couvrent le décodage du catalogue complet, la conservation des métadonnées lors d’une panne, le regroupement/filtrage, la migration des lectures, la reprise au dernier chapitre consulté et le repère des nouveautés. Les résultats de validation de l’APK figurent dans les notes de publication. Le test sur téléphone réel n’a pas encore été réalisé.
 
-Les sites et extensions peuvent changer ou être indisponibles. Certaines métadonnées du catalogue initial sont encore inconnues. Les nouvelles notes ne peuvent être renseignées que si elles sont fournies ; aucune note n’est inventée. La première vérification d’une source préchargée établit un repère sur ses cinq pages récentes ; les suivantes suivent ce repère. Un changement absent du flux reste à vérifier sur la fiche.
+Les sites et extensions peuvent changer ou être indisponibles. Certaines métadonnées du catalogue initial sont encore inconnues. Les nouvelles notes ne peuvent être renseignées que si elles sont fournies ; aucune note n’est inventée. L’import initial parcourt le catalogue exposé par l’extension (pages populaires) : son exhaustivité dépend de la source. La première vérification d’une source préchargée établit un repère sur ses cinq pages récentes ; les suivantes recherchent tous les éléments de ce repère, avec au moins deux pages et une limite de dix pages récentes. Atteindre cette limite sans retrouver le repère est signalé comme partiel. Un changement absent du flux reste à vérifier sur la fiche.
 
 L’application et le catalogue ne contiennent pas les images des chapitres. Les sources sont nécessaires pour les consulter. La progression Android n’est pas synchronisée avec Windows.
 
