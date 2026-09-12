@@ -121,7 +121,7 @@ data object CatalogueTab : Tab {
         val revision by SillageCatalogue.revision.collectAsState()
         val extensions by Injekt.get<eu.kanade.tachiyomi.extension.ExtensionManager>().installedExtensionsFlow.collectAsState()
         val enabledLanguages = Injekt.get<eu.kanade.domain.source.service.SourcePreferences>().enabledLanguages.get() + setOf("fr", "en", "all")
-        val availableSources = extensions.flatMap { it.sources }.filter { it.lang in enabledLanguages }
+        val availableSources = (extensions.flatMap { it.sources }.filter { it.lang in enabledLanguages } + remember { AsuraSource() }).distinctBy { it.id }
         var sourceStatus by remember { mutableStateOf<Map<Long, String>>(emptyMap()) }
         var refreshSummary by remember { mutableStateOf("Aucune vérification effectuée") }
         var runningSources by remember { mutableStateOf(0) }
@@ -141,7 +141,18 @@ data object CatalogueTab : Tab {
         LaunchedEffect(extensions) {
             while (true) {
                 val snapshot = withContext(Dispatchers.IO) {
-                    val messages = CatalogueStore(context).use { store -> availableSources.associate { it.id to store.state(it.id).message } }
+                    val messages = CatalogueStore(context).use { store -> availableSources.associate { source ->
+                        val work = androidx.work.WorkManager.getInstance(context).getWorkInfosForUniqueWork("sillage-import-${source.id}").get()
+                        val state = work.firstOrNull { !it.state.isFinished }?.state ?: work.lastOrNull()?.state
+                        val prefix = when (state) {
+                            androidx.work.WorkInfo.State.RUNNING -> "Vérification en cours"
+                            androidx.work.WorkInfo.State.ENQUEUED, androidx.work.WorkInfo.State.BLOCKED -> "En attente du réseau ou de reprise Android"
+                            androidx.work.WorkInfo.State.CANCELLED -> "En pause — progression conservée"
+                            androidx.work.WorkInfo.State.FAILED -> "Source en erreur"
+                            else -> ""
+                        }
+                        source.id to (prefix + "\n" + store.state(source.id).message).trim()
+                    } }
                     val active = availableSources.count { source ->
                         androidx.work.WorkManager.getInstance(context).getWorkInfosForUniqueWork("sillage-import-${source.id}").get().any { !it.state.isFinished }
                     }
@@ -150,7 +161,7 @@ data object CatalogueTab : Tab {
                 }
                 sourceStatus = snapshot.first
                 runningSources = snapshot.second
-                val failures = sourceStatus.values.count { it.contains("Échec") || it.contains("Délai dépassé") }
+                val failures = sourceStatus.values.count { it.contains("Échec") || it.contains("Délai dépassé") || it.contains("Source en erreur") }
                 val partial = sourceStatus.values.count {
                     it.contains("fiches incomplètes") || it.contains("Vérification partielle") || it.contains("ne fournit pas de flux")
                 }
@@ -247,6 +258,7 @@ data object CatalogueTab : Tab {
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalArrangement = Arrangement.spacedBy(18.dp),
                 ) {
+                    if (query.isBlank() && genre.isBlank() && minimum == 0) item(span = { GridItemSpan(maxLineSpan) }) { SillageReadingHome() }
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         CatalogueControls(
                             summary = refreshSummary,
@@ -254,7 +266,7 @@ data object CatalogueTab : Tab {
                             onSources = { showSources = true },
                             onUpdate = {
                                 availableSources.forEach { CatalogueImportWorker.enqueue(context, it, latest = true) }
-                                scope.launch { snackbar.showSnackbar(if (availableSources.isEmpty()) "Aucune source active. Ouvre Sources pour en ajouter." else "Demande envoyée à ${availableSources.size} source(s). Le résultat apparaîtra ici.") }
+                                scope.launch { snackbar.showSnackbar(if (availableSources.isEmpty()) "Aucune source active. Ouvre Sources pour en ajouter." else "Actualisation en arrière-plan : tu peux continuer à lire et rechercher. Cela peut prendre plusieurs dizaines de minutes.") }
                             },
                         )
                     }
@@ -325,16 +337,18 @@ data object CatalogueTab : Tab {
             title = { Text("Sources et nouveautés") },
             text = {
                 Column(Modifier.verticalScroll(rememberScrollState())) {
-                    Text("Une nouvelle source importe son catalogue automatiquement. Ensuite, Actualiser ne consulte que son flux de nouveautés. Une source sans ce flux est signalée ici.", style = MaterialTheme.typography.bodyMedium)
+                    Text("Une actualisation peut durer plusieurs dizaines de minutes, voire davantage au premier import. Tu peux continuer à lire et rechercher ; le chargement peut être ralenti. La progression est conservée pendant les attentes Android. Les favoris sont vérifiés séparément tous les 7 jours.", style = MaterialTheme.typography.bodyMedium)
                     availableSources.sortedBy { it.name }.forEach { source ->
                         Text(source.name, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 12.dp))
+                        TextButton(onClick = { showSources = false; navigator.push(BrowseSourceScreen(source.id, null)) }) { Text("Parcourir cette source") }
                         Text(sourceStatus[source.id] ?: "En attente", style = MaterialTheme.typography.bodySmall)
                         TextButton(
                             onClick = {
                                 CatalogueImportWorker.enqueue(context, source, latest = true)
                             },
                             modifier = Modifier.fillMaxWidth(),
-                        ) { Text("Actualiser / Réessayer") }
+                        ) { Text("Actualiser / Reprendre") }
+                        TextButton(onClick = { androidx.work.WorkManager.getInstance(context).cancelUniqueWork("sillage-import-${source.id}") }) { Text("Mettre en pause") }
                     }
                 }
             },
@@ -382,7 +396,10 @@ private fun CatalogueControls(summary: String, running: Boolean, onSources: () -
             TextButton(onClick = onSources) { Text("Sources et résultats") }
         }
         Text(summary, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        if (running) LinearProgressIndicator(Modifier.fillMaxWidth().padding(top = 6.dp))
+        if (running) {
+            Text("En arrière-plan : tu peux continuer à lire et rechercher. Cette opération peut durer plusieurs dizaines de minutes, avec des pauses Android. Le chargement peut être ralenti.", style = MaterialTheme.typography.bodySmall)
+            LinearProgressIndicator(Modifier.fillMaxWidth().padding(top = 6.dp))
+        }
     }
 }
 

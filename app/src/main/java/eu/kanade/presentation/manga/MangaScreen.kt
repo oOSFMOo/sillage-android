@@ -489,6 +489,7 @@ private fun MangaScreenSmallImpl(
                         contentType = MangaScreenItem.ACTION_ROW,
                     ) {
                         SillageRefreshButton(state.isRefreshingData, onRefresh)
+                        eu.kanade.tachiyomi.ui.sillage.SillageSeriesActions(state.manga)
                         MangaActionRow(
                             favorite = state.manga.favorite,
                             trackingCount = state.trackingCount,
@@ -797,6 +798,7 @@ fun MangaScreenLargeImpl(
                             doSearch = onSearch,
                         )
                         SillageRefreshButton(state.isRefreshingData, onRefresh)
+                        eu.kanade.tachiyomi.ui.sillage.SillageSeriesActions(state.manga)
                         MangaActionRow(
                             favorite = state.manga.favorite,
                             trackingCount = state.trackingCount,

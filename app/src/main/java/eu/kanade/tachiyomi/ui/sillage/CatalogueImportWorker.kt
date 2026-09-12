@@ -47,7 +47,7 @@ class CatalogueImportWorker(context: Context, parameters: WorkerParameters) : Co
             val seenPages = mutableSetOf<List<String>>()
             try {
                 while (true) {
-                    store.state(id, state.copy(message = "${source.name} · ${if (state.complete) "Nouveautés" else "Import"} · page $page"))
+                    store.state(id, state.copy(message = "${source.name} · ${if (state.complete) "Nouveautés" else "Import"} · page $page · $checked séries vérifiées"))
                     val result = withTimeout(60_000) {
                         if (state.complete) source.getLatestUpdates(page) else source.getPopularManga(page)
                     }
@@ -62,7 +62,7 @@ class CatalogueImportWorker(context: Context, parameters: WorkerParameters) : Co
                     result.mangas.forEachIndexed { position, manga ->
                         if (position < offset) return@forEachIndexed
                         if (System.currentTimeMillis() - started > 360_000) {
-                            store.state(id, state.copy(message = "Import conservé, reprise en attente"))
+                            store.state(id, state.copy(message = "Reprise en attente · $checked séries vérifiées · page $page"))
                             return@withContext Result.retry()
                         }
                         // Save discovery immediately, even if one detail endpoint is unavailable.
@@ -74,7 +74,7 @@ class CatalogueImportWorker(context: Context, parameters: WorkerParameters) : Co
                                 source.getMangaUpdate(manga, emptyList(), fetchDetails = true, fetchChapters = true)
                             }
                             entry = entry.copy(cover = detail.manga.thumbnail_url ?: entry.cover,
-                                genres = detail.manga.genre?.split(',')?.map(String::trim).orEmpty(), chapters = detail.chapters.size)
+                                genres = detail.manga.genre?.split(',')?.map(String::trim).orEmpty(), chapters = detail.chapters.size, rating = (source as? AsuraSource)?.ratingFor(manga.url))
                             val local = Injekt.get<tachiyomi.domain.manga.repository.MangaRepository>()
                                 .getMangaByUrlAndSourceId(manga.url, id)
                             if (local?.favorite == true && detail.chapters.isNotEmpty()) {
@@ -120,7 +120,7 @@ class CatalogueImportWorker(context: Context, parameters: WorkerParameters) : Co
                         store.state(id, state)
                     }
                     if (System.currentTimeMillis() - started > 360_000) {
-                        store.state(id, state.copy(message = "Import conservé, reprise en attente"))
+                        store.state(id, state.copy(message = "Reprise en attente · $checked séries vérifiées · page $page"))
                         return@withContext Result.retry()
                     }
                     delay(1000)
@@ -140,6 +140,7 @@ class CatalogueImportWorker(context: Context, parameters: WorkerParameters) : Co
     companion object {
         fun enqueue(context: Context, source: Source, latest: Boolean = false) {
             val work = OneTimeWorkRequestBuilder<CatalogueImportWorker>()
+                .setBackoffCriteria(androidx.work.BackoffPolicy.LINEAR, 30, java.util.concurrent.TimeUnit.SECONDS)
                 .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
                 .setInputData(workDataOf("source" to source.id, "latest" to latest))
                 .build()

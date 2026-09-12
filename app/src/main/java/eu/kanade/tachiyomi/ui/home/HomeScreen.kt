@@ -261,7 +261,7 @@ object HomeScreen : Screen() {
     @Composable
     private fun navigationTitle(tab: eu.kanade.presentation.util.Tab): String = when (tab) {
         LibraryTab -> "Mes lectures"
-        UpdatesTab -> "Nouveautés"
+        UpdatesTab -> "Chapitres"
         BrowseTab -> "Sources"
         else -> tab.options.title
     }

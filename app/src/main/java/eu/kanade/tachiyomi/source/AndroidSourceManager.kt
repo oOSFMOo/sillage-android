@@ -102,6 +102,9 @@ class AndroidSourceManager(
                             put(EXH_SOURCE_ID, EHentai(EXH_SOURCE_ID, true, context))
                         }
                         put(MERGED_SOURCE_ID, MergedSource())
+                        val asura = eu.kanade.tachiyomi.ui.sillage.AsuraSource()
+                        put(asura.id, asura)
+                        registerStubSource(StubSource.from(asura))
                         // SY <--
                     }
 

@@ -6,6 +6,7 @@ import eu.kanade.tachiyomi.extension.ExtensionManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import tachiyomi.domain.library.service.LibraryPreferences
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
@@ -24,6 +25,13 @@ internal object CatalogueStartup {
             }
             val seedSources = SillageCatalogue.load(context).document.series
                 .flatMap { listOf(it) + it.editions }.map { it.sourceId }.toSet()
+            val sourceManager = Injekt.get<tachiyomi.domain.source.service.SourceManager>()
+            sourceManager.isInitialized.first { it }
+            CatalogueStore(context).use { store ->
+                if (store.state(AsuraSource.ID).message == "En attente") {
+                    sourceManager.get(AsuraSource.ID)?.let { CatalogueImportWorker.enqueue(context, it) }
+                }
+            }
             Injekt.get<ExtensionManager>().installedExtensionsFlow.collect { extensions ->
                 val languages = Injekt.get<SourcePreferences>().enabledLanguages.get() + setOf("fr", "en", "all")
                 CatalogueStore(context).use { store ->
