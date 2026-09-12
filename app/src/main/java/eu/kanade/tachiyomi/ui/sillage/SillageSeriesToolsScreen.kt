@@ -28,12 +28,10 @@ import uy.kohesive.injekt.api.get
 @Composable
 fun SillageSeriesActions(manga: Manga) {
     val navigator = LocalNavigator.currentOrThrow
-    Column {
     Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         TextButton(onClick = { navigator.push(SillageSeriesToolsScreen(manga.id)) }, modifier = Modifier.weight(1f)) { Text("Similaires / sources") }
         TextButton(onClick = { navigator.push(SillageSeriesToolsScreen(manga.id, true)) }, modifier = Modifier.weight(1f)) { Text("Télécharger") }
     }
-}
 }
 
 class SillageSeriesToolsScreen(private val mangaId: Long, private val trainFirst: Boolean = false) : Screen() {

@@ -4,14 +4,19 @@ Une bibliothèque de manhua et webtoons pour lire sur Android, sans dépendre d�
 
 ## Télécharger
 
-**[Télécharger la version Android 1.2](https://github.com/oOSFMOo/sillage-android/releases/tag/v1.2.0)**
+**[Télécharger la version Android 1.3](https://github.com/oOSFMOo/sillage-android/releases/tag/v1.3.0)**
 
-Dans les fichiers de la version, prends **Sillage-Android-1.2.apk**. Ouvre-le pour mettre à jour Sillage sans désinstaller l’application. Les extensions déjà installées restent utilisables. Dès cette version, **Plus → À propos → Vérifier les mises à jour de Sillage** permet de récupérer les prochaines versions depuis GitHub.
+Dans les fichiers de la version, prends **Sillage-Android-1.3.apk**. Ouvre-le pour mettre à jour Sillage sans désinstaller l’application. Les extensions déjà installées restent utilisables. Depuis la version 1.2, **Plus → À propos → Vérifier les mises à jour de Sillage** permet de récupérer les prochaines versions depuis GitHub.
 
 [Guide d’installation et de transfert de progression](INSTALLATION.md)
 
 ## Fonctionnalités
 
+- Asura Scans en anglais intégré, avec import initial automatique des séries exposées par le site. Aucune APK d’extension supplémentaire pour cette source ; seuls les chapitres accessibles publiquement sont proposés.
+- Accès aux dernières lectures depuis le catalogue, recommandations par genres communs et accès aux autres sources depuis une série.
+- Téléchargement pour les trajets : 5 ou 10 chapitres, choix 25/50/100 ou quantité personnalisée de 1 à 500 depuis la reprise de lecture. Vérifier la fin de la file avant de partir hors connexion.
+- Onglet **Chapitres** pour les nouveaux chapitres des favoris, regroupés par série, avec explication et vérification manuelle si la liste est vide.
+- État détaillé des imports, avertissement sur leur durée et boutons pour mettre en pause ou reprendre une source. La navigation et la lecture restent accessibles pendant l’import, avec un ralentissement possible.
 - Vérification des nouvelles versions de Sillage au lancement (au plus une fois par jour) et bouton manuel dans À propos. Téléchargement uniquement après acceptation, contrôle de l’identifiant et de la signature, puis confirmation de l’installation par Android.
 
 - Catalogue initial de 81 527 fiches regroupées ; les favoris sont choisis séparément.
@@ -32,6 +37,8 @@ Cette version est destinée à être testée. Les tests automatisés couvrent le
 Les sites et extensions peuvent changer ou être indisponibles. Certaines métadonnées du catalogue initial sont encore inconnues. Les nouvelles notes ne peuvent être renseignées que si elles sont fournies ; aucune note n’est inventée. L’import initial parcourt le catalogue exposé par l’extension (pages populaires) : son exhaustivité dépend de la source. La première vérification d’une source préchargée établit un repère sur ses cinq pages récentes ; les suivantes recherchent tous les éléments de ce repère, avec au moins deux pages et une limite de dix pages récentes. Atteindre cette limite sans retrouver le repère est signalé comme partiel. Un changement absent du flux reste à vérifier sur la fiche.
 
 L’application et le catalogue ne contiennent pas les images des chapitres. Les sources sont nécessaires pour les consulter. La progression Android n’est pas synchronisée avec Windows.
+
+Le regroupement des variantes de chapitres « officiel / non officiel » est reporté à une prochaine version.
 
 ## Construire
 

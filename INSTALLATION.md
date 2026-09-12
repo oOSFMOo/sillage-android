@@ -1,10 +1,10 @@
-# Sillage Android 1.2 — installation et mise à jour
+# Sillage Android 1.3 — installation et mise à jour
 
 Cette APK contient réellement l’interface Sillage et son catalogue. Elle fonctionne sur Android 8 ou plus récent, même lorsque le PC est éteint.
 
 ## Installer
 
-1. Ouvre **Sillage-Android-1.2.apk** sur le téléphone, puis accepte sa mise à jour. **Ne désinstalle pas Sillage** : la mise à jour conserve la bibliothèque, les réglages et la progression. Une sauvegarde complète dans Plus → Paramètres → Données et stockage reste conseillée avant toute mise à jour.
+1. Ouvre **Sillage-Android-1.3.apk** sur le téléphone, puis accepte sa mise à jour. **Ne désinstalle pas Sillage** : la mise à jour conserve la bibliothèque, les réglages et la progression. Une sauvegarde complète dans Plus → Paramètres → Données et stockage reste conseillée avant toute mise à jour.
 2. Sillage s’installe à côté de TachiyomiSY. Garde l’ancienne application pour transférer et vérifier ta progression.
 3. Au premier lancement, termine les étapes d’accueil (dossier de stockage et autorisations utiles). L’application s’ouvre ensuite sur **Catalogue**. Il est déjà inclus : aucun fichier « catalogue » à restaurer.
 4. Les extensions déjà installées sur le téléphone peuvent être réutilisées. Ouvre **Catalogue → Sources et résultats → Gérer les extensions**, puis vérifie qu’elles sont disponibles et approuvées. Pour une première installation, les cinq APK d’extensions restent disponibles dans le paquet de la version 1.0 sur GitHub : MangaFire, Vortex Scans, King of Shojo, ManhuaTop et Rolia Scan.
@@ -15,7 +15,17 @@ Dans **Plus → À propos**, touche **Vérifier les mises à jour de Sillage**. 
 
 Une vérification a aussi lieu au lancement, au plus une fois par jour. Rien n’est téléchargé sans acceptation. Après téléchargement, touche **Installer** dans la notification, ou **Installer la mise à jour téléchargée** dans À propos si les notifications sont désactivées. Android demande ta confirmation et peut demander d’autoriser Sillage à installer des applications. Le fichier est contrôlé : il doit avoir le même identifiant et la même signature, et un numéro de version supérieur.
 
-La version 1.2 doit être installée une première fois depuis le lien GitHub, car les versions précédentes ne disposent pas de ce bouton.
+Si tu utilises déjà la version 1.2, ce bouton permet de récupérer la 1.3. Depuis une version plus ancienne, installe directement l’APK 1.3 du dépôt GitHub.
+
+## Nouveautés de la version 1.3
+
+- **Asura Scans** est intégré en anglais : son premier import démarre automatiquement. Aucun fichier d’extension supplémentaire n’est nécessaire. Les chapitres payants ou encore en accès anticipé sont exclus.
+- Le catalogue donne accès aux dernières lectures. Sur une série, **Similaires / sources** propose des titres aux genres communs et les éditions disponibles. Les recommandations reposent sur les métadonnées connues.
+- **Télécharger** ouvre les options de trajet : 5 ou 10 chapitres, choix 25/50/100 et quantité personnalisée de 1 à 500. La sélection part de ta reprise de lecture. Il s’agit de vrais téléchargements, dont la fin doit être vérifiée dans la file avant de passer en mode avion. La taille dépend des images et n’est pas connue à l’avance.
+- L’onglet **Chapitres** affiche les nouveaux chapitres des favoris, avec regroupement par série. Une liste vide explique son rôle et propose une vérification des favoris. Une date de publication absente utilise la date de découverte pour le filtrage.
+- Les imports affichent leur état et peuvent être mis en pause puis repris par source. Une opération peut durer plusieurs dizaines de minutes et être différée par Android. Tu peux continuer à lire et rechercher ; les chargements peuvent être ralentis.
+
+Le regroupement des variantes de chapitres « officiel / non officiel » ne fait pas partie de cette mise à jour.
 
 ## Explorer et lire
 
