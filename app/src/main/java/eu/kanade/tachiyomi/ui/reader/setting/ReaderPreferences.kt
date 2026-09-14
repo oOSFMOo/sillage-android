@@ -105,7 +105,9 @@ class ReaderPreferences(
 
     val skipFiltered: Preference<Boolean> = preferenceStore.getBoolean("skip_filtered", true)
 
-    val skipDupe: Preference<Boolean> = preferenceStore.getBoolean("skip_dupe", false)
+    val skipDupe: Preference<Boolean> = preferenceStore.getBoolean("skip_dupe", true)
+
+    val rollingPreload: Preference<Int> = preferenceStore.getInt("sillage_rolling_preload_count", 10)
 
     val webtoonDisableZoomOut: Preference<Boolean> = preferenceStore.getBoolean("webtoon_disable_zoom_out", false)
 

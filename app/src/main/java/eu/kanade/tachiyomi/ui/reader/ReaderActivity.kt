@@ -600,7 +600,9 @@ class ReaderActivity : BaseActivity() {
         val verticalNavigatorOnLeft by readerPreferences.verticalNavigatorOnLeft.collectAsState()
         val verticalNavigatorHeight by readerPreferences.verticalNavigatorHeight.collectAsState()
 
+        val preloadStatus by viewModel.preloadStatus.collectAsState()
         ReaderAppBars(
+            preloadStatus = preloadStatus,
             visible = state.menuVisible,
 
             mangaTitle = state.manga?.title,

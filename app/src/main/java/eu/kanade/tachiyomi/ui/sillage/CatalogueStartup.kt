@@ -18,6 +18,10 @@ internal object CatalogueStartup {
         scope.launch(Dispatchers.IO) {
             // Runs once even after restoring preferences from another reader.
             val preferences = context.getSharedPreferences("sillage", Context.MODE_PRIVATE)
+            if (!preferences.getBoolean("skip-duplicates-v1", false)) {
+                Injekt.get<eu.kanade.tachiyomi.ui.reader.setting.ReaderPreferences>().skipDupe.set(true)
+                preferences.edit().putBoolean("skip-duplicates-v1", true).apply()
+            }
             if (!preferences.getBoolean("weekly-favourites-v2", false)) {
                 Injekt.get<LibraryPreferences>().autoUpdateInterval.set(168)
                 LibraryUpdateJob.setupTask(context)

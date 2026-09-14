@@ -271,6 +271,7 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
     }
 
     override fun onStart(owner: LifecycleOwner) {
+        eu.kanade.tachiyomi.ui.reader.loader.SillagePreloadCache.onStart(this)
         SecureActivityDelegate.onApplicationStart()
 
         val syncPreferences: SyncPreferences = Injekt.get()
@@ -281,6 +282,7 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
     }
 
     override fun onStop(owner: LifecycleOwner) {
+        eu.kanade.tachiyomi.ui.reader.loader.SillagePreloadCache.onStop(this)
         SecureActivityDelegate.onApplicationStopped()
     }
 

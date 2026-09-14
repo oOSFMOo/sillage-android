@@ -1,10 +1,10 @@
-# Sillage Android 1.3 — installation et mise à jour
+# Sillage Android 1.4 — installation et mise à jour
 
 Cette APK contient réellement l’interface Sillage et son catalogue. Elle fonctionne sur Android 8 ou plus récent, même lorsque le PC est éteint.
 
 ## Installer
 
-1. Ouvre **Sillage-Android-1.3.apk** sur le téléphone, puis accepte sa mise à jour. **Ne désinstalle pas Sillage** : la mise à jour conserve la bibliothèque, les réglages et la progression. Une sauvegarde complète dans Plus → Paramètres → Données et stockage reste conseillée avant toute mise à jour.
+1. Ouvre **Sillage-Android-1.4.apk** sur le téléphone, puis accepte sa mise à jour. **Ne désinstalle pas Sillage** : la mise à jour conserve la bibliothèque, les réglages et la progression. Une sauvegarde complète dans Plus → Paramètres → Données et stockage reste conseillée avant toute mise à jour.
 2. Sillage s’installe à côté de TachiyomiSY. Garde l’ancienne application pour transférer et vérifier ta progression.
 3. Au premier lancement, termine les étapes d’accueil (dossier de stockage et autorisations utiles). L’application s’ouvre ensuite sur **Catalogue**. Il est déjà inclus : aucun fichier « catalogue » à restaurer.
 4. Les extensions déjà installées sur le téléphone peuvent être réutilisées. Ouvre **Catalogue → Sources et résultats → Gérer les extensions**, puis vérifie qu’elles sont disponibles et approuvées. Pour une première installation, les cinq APK d’extensions restent disponibles dans le paquet de la version 1.0 sur GitHub : MangaFire, Vortex Scans, King of Shojo, ManhuaTop et Rolia Scan.
@@ -15,7 +15,19 @@ Dans **Plus → À propos**, touche **Vérifier les mises à jour de Sillage**. 
 
 Une vérification a aussi lieu au lancement, au plus une fois par jour. Rien n’est téléchargé sans acceptation. Après téléchargement, touche **Installer** dans la notification, ou **Installer la mise à jour téléchargée** dans À propos si les notifications sont désactivées. Android demande ta confirmation et peut demander d’autoriser Sillage à installer des applications. Le fichier est contrôlé : il doit avoir le même identifiant et la même signature, et un numéro de version supérieur.
 
-Si tu utilises déjà la version 1.2, ce bouton permet de récupérer la 1.3. Depuis une version plus ancienne, installe directement l’APK 1.3 du dépôt GitHub.
+Si tu utilises déjà une version 1.2 ou ultérieure, ce bouton permet de récupérer la 1.4. Depuis une version plus ancienne, installe directement l’APK 1.4 du dépôt GitHub.
+
+## Préchargement et anti-doublons — version 1.4
+
+La lecture prépare automatiquement le chapitre courant, puis jusqu’à dix chapitres non lus en avance. Les images sont chargées dans l’ordre, une seule à la fois pour cette réserve ; une demande du lecteur suspend le préchargement. Lorsque tu avances, la réserve avance avec toi. Le réseau mobile est autorisé : les images préchargées consomment des données.
+
+Dans **Plus → Paramètres → Lecteur → Chapitres à précharger en avance**, choisis **Désactivé, 1, 3, 5 ou 10**. Le réglage s’applique au préchargement en cours. Le préchargement habituel de quelques pages du lecteur reste indépendant. Touche l’écran pour afficher les commandes et le nombre de chapitres prêts.
+
+La réserve temporaire est limitée à 1 Go et laisse de la place libre sur le téléphone. Le chargement peut s’arrêter avant l’objectif en cas de manque d’espace, de réseau lent ou de source indisponible ; il réessaie ensuite. Les chapitres lus sont nettoyés après leur sortie du lecteur actif (passage au suivant ou fermeture). Après deux heures hors de l’application, un nettoyage est planifié ; Android peut le différer. Les fichiers expirés sont aussi contrôlés au retour dans l’application. Rien n’est ajouté à la file des téléchargements conservés et ceux-ci ne sont pas effacés.
+
+**Ignorer les chapitres en double** est activé une fois lors de cette mise à jour, puis ton choix est conservé. Pour le désactiver, utilise l’interrupteur dans les réglages du lecteur puis rouvre la série. L’enchaînement garde la version ouverte et privilégie le même groupe de traduction pour les numéros suivants. Les variantes restent accessibles sur la fiche ; un numéro inconnu ou un chapitre 30.5 n’est pas fusionné avec le chapitre 30.
+
+La réserve est un cache : Android peut la libérer. Pour un vol, utilise toujours les téléchargements conservés et vérifie leur fin avant le départ.
 
 ## Nouveautés de la version 1.3
 
@@ -25,7 +37,7 @@ Si tu utilises déjà la version 1.2, ce bouton permet de récupérer la 1.3. De
 - L’onglet **Chapitres** affiche les nouveaux chapitres des favoris, avec regroupement par série. Une liste vide explique son rôle et propose une vérification des favoris. Une date de publication absente utilise la date de découverte pour le filtrage.
 - Les imports affichent leur état et peuvent être mis en pause puis repris par source. Une opération peut durer plusieurs dizaines de minutes et être différée par Android. Tu peux continuer à lire et rechercher ; les chargements peuvent être ralentis.
 
-Le regroupement des variantes de chapitres « officiel / non officiel » ne fait pas partie de cette mise à jour.
+La version 1.3 n’ajoutait pas encore l’activation automatique de l’anti-doublons, désormais incluse dans la 1.4.
 
 ## Explorer et lire
 

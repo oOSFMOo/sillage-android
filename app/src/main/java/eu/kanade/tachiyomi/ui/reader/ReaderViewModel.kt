@@ -144,6 +144,11 @@ class ReaderViewModel @JvmOverloads constructor(
     private val mutableState = MutableStateFlow(State())
     val state = mutableState.asStateFlow()
 
+    private val rollingPreloader by lazy {
+        eu.kanade.tachiyomi.ui.reader.loader.SillageRollingPreloader(Injekt.get<Application>(), viewModelScope)
+    }
+    val preloadStatus get() = rollingPreloader.status
+
     private val eventChannel = Channel<Event>()
     val eventFlow = eventChannel.receiveAsFlow()
 
@@ -317,6 +322,7 @@ class ReaderViewModel @JvmOverloads constructor(
     override fun onCleared() {
         val currentChapters = state.value.viewerChapters
         if (currentChapters != null) {
+            rollingPreloader.release(chapterList.filter { it.chapter.read }.mapNotNull { it.chapter.id }.toSet())
             currentChapters.unref()
             chapterToDownload?.let {
                 downloadManager.addDownloadsToStartOfQueue(listOf(it))
@@ -596,6 +602,12 @@ class ReaderViewModel @JvmOverloads constructor(
 
         val selectedChapter = page.chapter
         val pages = selectedChapter.pages ?: return
+        manga?.let { currentManga ->
+            getSource()?.let { source ->
+                rollingPreloader.follow(currentManga, source,
+                    chapterList.mapNotNull { it.chapter.toDomainChapter() }, selectedChapter.chapter.id!!)
+            }
+        }
 
         // Save last page read and mark as read if needed
         viewModelScope.launchNonCancellable {

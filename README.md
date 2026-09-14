@@ -4,14 +4,18 @@ Une bibliothèque de manhua et webtoons pour lire sur Android, sans dépendre d�
 
 ## Télécharger
 
-**[Télécharger la version Android 1.3](https://github.com/oOSFMOo/sillage-android/releases/tag/v1.3.0)**
+**[Télécharger la version Android 1.4](https://github.com/oOSFMOo/sillage-android/releases/tag/v1.4.0)**
 
-Dans les fichiers de la version, prends **Sillage-Android-1.3.apk**. Ouvre-le pour mettre à jour Sillage sans désinstaller l’application. Les extensions déjà installées restent utilisables. Depuis la version 1.2, **Plus → À propos → Vérifier les mises à jour de Sillage** permet de récupérer les prochaines versions depuis GitHub.
+Dans les fichiers de la version, prends **Sillage-Android-1.4.apk**. Ouvre-le pour mettre à jour Sillage sans désinstaller l’application. Les extensions déjà installées restent utilisables. Depuis la version 1.2, **Plus → À propos → Vérifier les mises à jour de Sillage** permet de récupérer les prochaines versions depuis GitHub.
 
 [Guide d’installation et de transfert de progression](INSTALLATION.md)
 
 ## Fonctionnalités
 
+- Préchargement temporaire glissant de la série lue : chapitre courant puis dix chapitres non lus en avance, en ordre, avec priorité aux demandes du lecteur. Réglage dans **Plus → Paramètres → Lecteur → Chapitres à précharger en avance** : désactivé, 1, 3, 5 ou 10. Fonctionne aussi sur les données mobiles.
+- Indicateur de disponibilité dans les commandes du lecteur. Réserve limitée à 1 Go et à l’espace disponible ; les dix chapitres constituent un objectif dépendant du réseau et du site.
+- Nettoyage du cache des chapitres terminés lorsque tu passes au suivant ou fermes le lecteur. Expiration après deux heures hors de l’application, exécutée selon la planification Android et vérifiée au retour. Les téléchargements conservés ne sont pas supprimés.
+- **Ignorer les chapitres en double** activé automatiquement à la mise à jour et désactivable dans les réglages du lecteur. Les variantes restent disponibles dans la fiche ; les numéros inconnus et fractionnaires restent distincts.
 - Asura Scans en anglais intégré, avec import initial automatique des séries exposées par le site. Aucune APK d’extension supplémentaire pour cette source ; seuls les chapitres accessibles publiquement sont proposés.
 - Accès aux dernières lectures depuis le catalogue, recommandations par genres communs et accès aux autres sources depuis une série.
 - Téléchargement pour les trajets : 5 ou 10 chapitres, choix 25/50/100 ou quantité personnalisée de 1 à 500 depuis la reprise de lecture. Vérifier la fin de la file avant de partir hors connexion.
@@ -38,7 +42,7 @@ Les sites et extensions peuvent changer ou être indisponibles. Certaines métad
 
 L’application et le catalogue ne contiennent pas les images des chapitres. Les sources sont nécessaires pour les consulter. La progression Android n’est pas synchronisée avec Windows.
 
-Le regroupement des variantes de chapitres « officiel / non officiel » est reporté à une prochaine version.
+L’anti-doublons agit sur l’enchaînement du lecteur selon les numéros fournis par la source. Il conserve la variante ouverte et privilégie ensuite le même groupe de traduction. Il ne fusionne ni ne supprime les variantes dans la base de données.
 
 ## Construire
 

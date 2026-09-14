@@ -491,6 +491,12 @@ object SettingsReaderScreen : SearchableSettings {
             title = stringResource(SYMR.strings.page_downloading),
             preferenceItems = listOf(
                 Preference.PreferenceItem.ListPreference(
+                    preference = readerPreferences.rollingPreload,
+                    title = "Chapitres à précharger en avance",
+                    subtitle = "Sur Wi-Fi et données mobiles, un chapitre après l’autre. Priorité à la lecture. Cache temporaire limité à 1 Go, nettoyé après lecture ou après deux heures hors de l’application (selon Android). Les téléchargements conservés restent intacts.",
+                    entries = mapOf(0 to "Désactivé", 1 to "1 chapitre", 3 to "3 chapitres", 5 to "5 chapitres", 10 to "10 chapitres (par défaut)"),
+                ),
+                Preference.PreferenceItem.ListPreference(
                     preference = readerPreferences.preloadSize,
                     title = stringResource(SYMR.strings.reader_preload_amount),
                     subtitle = stringResource(SYMR.strings.reader_preload_amount_summary),

@@ -46,6 +46,7 @@ internal class HttpPageLoader(
 ) : PageLoader() {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val rollingCache = SillagePreloadCache(Injekt.get<android.app.Application>())
 
     /**
      * A queue used to manage requests one by one while allowing priorities.
@@ -89,12 +90,12 @@ internal class HttpPageLoader(
      */
     override suspend fun getPages(): List<ReaderPage> {
         val pages = try {
-            chapterCache.getPageListFromCache(chapter.chapter.toDomainChapter()!!)
+            rollingCache.pages(chapter.chapter.id!!) ?: chapterCache.getPageListFromCache(chapter.chapter.toDomainChapter()!!)
         } catch (e: Throwable) {
             if (e is CancellationException) {
                 throw e
             }
-            source.getPageList(chapter.chapter)
+            SillagePreloadCache.readerRequest { source.getPageList(chapter.chapter) }
         }
         // SY -->
         val rp = pages.mapIndexed { index, page ->
@@ -119,7 +120,8 @@ internal class HttpPageLoader(
         val imageUrl = page.imageUrl
 
         // Check if the image has been deleted
-        if (page.status == Page.State.Ready && imageUrl != null && !chapterCache.isImageInCache(imageUrl)) {
+        if (page.status == Page.State.Ready && imageUrl != null &&
+            rollingCache.image(chapter.chapter.id!!, imageUrl) == null && !chapterCache.isImageInCache(imageUrl)) {
             page.status = Page.State.Queue
         }
 
@@ -218,14 +220,23 @@ internal class HttpPageLoader(
         try {
             if (page.imageUrl.isNullOrEmpty()) {
                 page.status = Page.State.LoadPage
-                page.imageUrl = source.getImageUrl(page)
+                page.imageUrl = SillagePreloadCache.readerRequest { source.getImageUrl(page) }
             }
             val imageUrl = page.imageUrl!!
+            if (force) rollingCache.invalidateImage(chapter.chapter.id!!, imageUrl)
+
+            if (!force && rollingCache.image(chapter.chapter.id!!, imageUrl) != null) {
+                page.stream = { requireNotNull(rollingCache.image(chapter.chapter.id!!, imageUrl)).inputStream() }
+                page.status = Page.State.Ready
+                return
+            }
 
             if (force || !chapterCache.isImageInCache(imageUrl)) {
                 page.status = Page.State.DownloadImage
-                val imageResponse = source.getImage(page, dataSaver = dataSaver)
-                chapterCache.putImageToCache(imageUrl, imageResponse)
+                SillagePreloadCache.readerRequest {
+                    val imageResponse = source.getImage(page, dataSaver = dataSaver)
+                    chapterCache.putImageToCache(imageUrl, imageResponse)
+                }
             }
 
             page.stream = { chapterCache.getImageFile(imageUrl).inputStream() }

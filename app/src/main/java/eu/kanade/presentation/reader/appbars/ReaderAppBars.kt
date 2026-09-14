@@ -95,6 +95,7 @@ fun ReaderAppBars(
     onClickChapterList: () -> Unit,
     onClickPageLayout: () -> Unit,
     onClickShiftPage: () -> Unit,
+    preloadStatus: String = "",
     // SY <--
 ) {
     val backgroundColor = MaterialTheme.colorScheme
@@ -125,6 +126,14 @@ fun ReaderAppBars(
                     onShare = onShare,
                     SY <-- */
                 )
+                if (preloadStatus.isNotBlank()) {
+                    androidx.compose.material3.Text(
+                        text = preloadStatus,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.fillMaxWidth().background(backgroundColor).padding(horizontal = 16.dp, vertical = 4.dp),
+                    )
+                }
                 // SY -->
                 ExhUtils(
                     isVisible = isExhToolsVisible,
