@@ -46,11 +46,11 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
 
         setForegroundSafely()
 
-        withIOContext {
-            downloadApk(title, url)
-        }
-
-        return Result.success()
+        return try {
+            withIOContext { downloadApk(title, url) }
+            Result.success()
+        } catch (e: CancellationException) { throw e
+        } catch (_: Exception) { Result.failure() }
     }
 
     override suspend fun getForegroundInfo(): ForegroundInfo {
@@ -97,16 +97,13 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
             val response = network.client.newCachelessCallWithProgress(GET(url), progressListener)
                 .await()
 
-            // File where the apk will be saved.
-            val apkFile = File(context.externalCacheDir, "update.apk")
-
-            if (response.isSuccessful) {
-                response.body.source().saveTo(apkFile)
-            } else {
-                response.close()
-                throw Exception("Unsuccessful response")
+            val coroutineContext = kotlinx.coroutines.currentCoroutineContext()
+            val apkFile = response.use {
+                check(it.isSuccessful) { "Téléchargement impossible (HTTP ${it.code})" }
+                SillageUpdateFile.download(context.cacheDir, it.body.byteStream(), it.body.contentLength(),
+                    checkActive = { if (coroutineContext[kotlinx.coroutines.Job]?.isActive == false) throw CancellationException() },
+                    verify = { file -> SillageApkVerifier.verify(context, file) })
             }
-            SillageApkVerifier.verify(context, apkFile)
             notifier.cancel()
             notifier.promptInstall(apkFile.getUriCompat(context))
         } catch (e: Exception) {
@@ -114,8 +111,10 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
                 (e is StreamResetException && e.errorCode == ErrorCode.CANCEL)
             if (shouldCancel) {
                 notifier.cancel()
+                throw e
             } else {
-                notifier.onDownloadError(url)
+                notifier.onDownloadError(url, e.message)
+                throw e
             }
         }
     }

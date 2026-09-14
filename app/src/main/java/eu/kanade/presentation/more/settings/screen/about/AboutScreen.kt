@@ -147,11 +147,12 @@ object AboutScreen : Screen() {
                     item {
                         TextPreferenceWidget(
                             title = "Installer la mise à jour téléchargée",
-                            subtitle = "Après le téléchargement · Android demandera ta confirmation",
+                            subtitle = "Disponible uniquement après un téléchargement complet et vérifié",
                             onPreferenceClick = {
                                 scope.launch {
                                     try {
-                                        val apk = java.io.File(context.externalCacheDir, "update.apk")
+                                        val apk = eu.kanade.tachiyomi.data.updater.SillageUpdateFile.ready(context.cacheDir)
+                                        check(apk.isFile) { "Aucune mise à jour prête. Lance le téléchargement et attends sa fin avant de toucher Installer." }
                                         withIOContext { eu.kanade.tachiyomi.data.updater.SillageApkVerifier.verify(context, apk) }
                                         eu.kanade.tachiyomi.data.notification.NotificationHandler
                                             .installApkPendingActivity(context, apk.getUriCompat(context)).send()

@@ -144,9 +144,9 @@ internal class AppUpdateNotifier(private val context: Context) {
      *
      * @param url web location of apk to download.
      */
-    fun onDownloadError(url: String) {
+    fun onDownloadError(url: String, detail: String? = null) {
         with(notificationBuilder) {
-            setContentText(context.stringResource(MR.strings.update_check_notification_download_error))
+            setContentText(detail ?: context.stringResource(MR.strings.update_check_notification_download_error))
             setSmallIcon(R.drawable.ic_warning_white_24dp)
             setOnlyAlertOnce(false)
             setProgress(0, 0, false)
