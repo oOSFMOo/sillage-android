@@ -4,16 +4,17 @@ Une bibliothèque de manhua et webtoons pour lire sur Android, sans dépendre d�
 
 ## Télécharger
 
-**[Télécharger la version Android 1.5](https://github.com/oOSFMOo/sillage-android/releases/tag/v1.5.0)**
+**[Télécharger la version Android 1.4](https://github.com/oOSFMOo/sillage-android/releases/tag/v1.4.0)**
 
-Dans les fichiers de la version, prends **Sillage-Android-1.5.apk**. Ouvre-le pour mettre à jour Sillage sans désinstaller l’application. Les extensions déjà installées restent utilisables. Depuis la version 1.2, **Plus → À propos → Vérifier les mises à jour de Sillage** permet de récupérer les prochaines versions depuis GitHub.
+Dans les fichiers de la version, prends **Sillage-Android-1.4.apk**. Ouvre-le pour mettre à jour Sillage sans désinstaller l’application. Les extensions déjà installées restent utilisables. Depuis la version 1.2, **Plus → À propos → Vérifier les mises à jour de Sillage** permet de récupérer les prochaines versions depuis GitHub.
+
+La version 1.5 n’est pas publiée. Un lien vers un commit donne accès au code, pas à une APK installable. L’extension Japscan indépendante est en préparation ; son fonctionnement sur le site actuel n’est pas encore validé.
 
 [Guide d’installation et de transfert de progression](INSTALLATION.md)
 
 ## Fonctionnalités
 
 - Préchargement temporaire glissant de la série lue : chapitre courant puis dix chapitres non lus en avance, en ordre, avec priorité aux demandes du lecteur. Réglage dans **Plus → Paramètres → Lecteur → Chapitres à précharger en avance** : désactivé, 1, 3, 5 ou 10. Fonctionne aussi sur les données mobiles.
-- **Japscan (VF)** intégré avec l’adresse actuelle `japscan.st` : catalogue, recherche, fiches et chapitres. Japscan peut demander une vérification Cloudflare dans WebView avant d’exposer les images.
 - Indicateur de disponibilité dans les commandes du lecteur. Réserve limitée à 1 Go et à l’espace disponible ; les dix chapitres constituent un objectif dépendant du réseau et du site.
 - Nettoyage du cache des chapitres terminés lorsque tu passes au suivant ou fermes le lecteur. Expiration après deux heures hors de l’application, exécutée selon la planification Android et vérifiée au retour. Les téléchargements conservés ne sont pas supprimés.
 - **Ignorer les chapitres en double** activé automatiquement à la mise à jour et désactivable dans les réglages du lecteur. Les variantes restent disponibles dans la fiche ; les numéros inconnus et fractionnaires restent distincts.

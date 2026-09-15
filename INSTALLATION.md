@@ -1,10 +1,10 @@
-# Sillage Android 1.5 — installation et mise à jour
+# Sillage Android 1.4 — installation et mise à jour
 
 Cette APK contient réellement l’interface Sillage et son catalogue. Elle fonctionne sur Android 8 ou plus récent, même lorsque le PC est éteint.
 
 ## Installer
 
-1. Ouvre **Sillage-Android-1.5.apk** sur le téléphone, puis accepte sa mise à jour. **Ne désinstalle pas Sillage** : la mise à jour conserve la bibliothèque, les réglages et la progression. Une sauvegarde complète dans Plus → Paramètres → Données et stockage reste conseillée avant toute mise à jour.
+1. Ouvre **Sillage-Android-1.4.apk** sur le téléphone, puis accepte sa mise à jour. **Ne désinstalle pas Sillage** : la mise à jour conserve la bibliothèque, les réglages et la progression. Une sauvegarde complète dans Plus → Paramètres → Données et stockage reste conseillée avant toute mise à jour.
 2. Sillage s’installe à côté de TachiyomiSY. Garde l’ancienne application pour transférer et vérifier ta progression.
 3. Au premier lancement, termine les étapes d’accueil (dossier de stockage et autorisations utiles). L’application s’ouvre ensuite sur **Catalogue**. Il est déjà inclus : aucun fichier « catalogue » à restaurer.
 4. Les extensions déjà installées sur le téléphone peuvent être réutilisées. Ouvre **Catalogue → Sources et résultats → Gérer les extensions**, puis vérifie qu’elles sont disponibles et approuvées. Pour une première installation, les cinq APK d’extensions restent disponibles dans le paquet de la version 1.0 sur GitHub : MangaFire, Vortex Scans, King of Shojo, ManhuaTop et Rolia Scan.
@@ -41,7 +41,7 @@ La version 1.3 n’ajoutait pas encore l’activation automatique de l’anti-do
 
 ## Explorer et lire
 
-- **Japscan (VF)** est disponible directement dans **Catalogue → Sources**. Sa protection Cloudflare peut demander d’ouvrir la source dans WebView puis de réouvrir le chapitre. Le site peut aussi modifier cette protection ; l’application affiche alors une erreur explicite au lieu de contourner le contrôle.
+- L’extension Japscan séparée est en préparation et n’est pas encore validée. Aucune version 1.5 de Sillage n’est publiée ; les commits du dépôt ne sont pas des fichiers d’installation.
 - Recherche dans le catalogue commun ; utilise **Trier et filtrer** pour les genres, la note et le nombre minimum de chapitres.
 - Une fiche regroupée propose les différentes sources, classées par nombre de chapitres connu. Les notes disponibles sont moyennées. Les données absentes restent inconnues : aucune note n’est inventée.
 - Ajoute tes séries avec le cœur. **Mes lectures** contient tes favoris ; **Historique** permet de reprendre la lecture.
