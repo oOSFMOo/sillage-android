@@ -41,6 +41,7 @@ La version 1.3 n’ajoutait pas encore l’activation automatique de l’anti-do
 
 ## Explorer et lire
 
+- **Japscan (VF)** est disponible directement dans **Catalogue → Sources**. Sa protection Cloudflare peut demander d’ouvrir la source dans WebView puis de réouvrir le chapitre. Le site peut aussi modifier cette protection ; l’application affiche alors une erreur explicite au lieu de contourner le contrôle.
 - Recherche dans le catalogue commun ; utilise **Trier et filtrer** pour les genres, la note et le nombre minimum de chapitres.
 - Une fiche regroupée propose les différentes sources, classées par nombre de chapitres connu. Les notes disponibles sont moyennées. Les données absentes restent inconnues : aucune note n’est inventée.
 - Ajoute tes séries avec le cœur. **Mes lectures** contient tes favoris ; **Historique** permet de reprendre la lecture.

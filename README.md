@@ -13,6 +13,7 @@ Dans les fichiers de la version, prends **Sillage-Android-1.4.apk**. Ouvre-le po
 ## Fonctionnalités
 
 - Préchargement temporaire glissant de la série lue : chapitre courant puis dix chapitres non lus en avance, en ordre, avec priorité aux demandes du lecteur. Réglage dans **Plus → Paramètres → Lecteur → Chapitres à précharger en avance** : désactivé, 1, 3, 5 ou 10. Fonctionne aussi sur les données mobiles.
+- **Japscan (VF)** intégré avec l’adresse actuelle `japscan.st` : catalogue, recherche, fiches et chapitres. Japscan peut demander une vérification Cloudflare dans WebView avant d’exposer les images.
 - Indicateur de disponibilité dans les commandes du lecteur. Réserve limitée à 1 Go et à l’espace disponible ; les dix chapitres constituent un objectif dépendant du réseau et du site.
 - Nettoyage du cache des chapitres terminés lorsque tu passes au suivant ou fermes le lecteur. Expiration après deux heures hors de l’application, exécutée selon la planification Android et vérifiée au retour. Les téléchargements conservés ne sont pas supprimés.
 - **Ignorer les chapitres en double** activé automatiquement à la mise à jour et désactivable dans les réglages du lecteur. Les variantes restent disponibles dans la fiche ; les numéros inconnus et fractionnaires restent distincts.

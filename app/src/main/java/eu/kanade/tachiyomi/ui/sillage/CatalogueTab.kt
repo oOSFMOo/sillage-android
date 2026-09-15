@@ -121,7 +121,7 @@ data object CatalogueTab : Tab {
         val revision by SillageCatalogue.revision.collectAsState()
         val extensions by Injekt.get<eu.kanade.tachiyomi.extension.ExtensionManager>().installedExtensionsFlow.collectAsState()
         val enabledLanguages = Injekt.get<eu.kanade.domain.source.service.SourcePreferences>().enabledLanguages.get() + setOf("fr", "en", "all")
-        val availableSources = (extensions.flatMap { it.sources }.filter { it.lang in enabledLanguages } + remember { AsuraSource() }).distinctBy { it.id }
+        val availableSources = (extensions.flatMap { it.sources }.filter { it.lang in enabledLanguages } + remember { AsuraSource() } + remember { JapscanSource() }).distinctBy { it.id }
         var sourceStatus by remember { mutableStateOf<Map<Long, String>>(emptyMap()) }
         var refreshSummary by remember { mutableStateOf("Aucune vérification effectuée") }
         var runningSources by remember { mutableStateOf(0) }

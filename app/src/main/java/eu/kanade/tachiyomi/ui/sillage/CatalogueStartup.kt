@@ -35,6 +35,9 @@ internal object CatalogueStartup {
                 if (store.state(AsuraSource.ID).message == "En attente") {
                     sourceManager.get(AsuraSource.ID)?.let { CatalogueImportWorker.enqueue(context, it) }
                 }
+                if (store.state(JapscanSource.ID).message == "En attente") {
+                    sourceManager.get(JapscanSource.ID)?.let { CatalogueImportWorker.enqueue(context, it) }
+                }
             }
             Injekt.get<ExtensionManager>().installedExtensionsFlow.collect { extensions ->
                 val languages = Injekt.get<SourcePreferences>().enabledLanguages.get() + setOf("fr", "en", "all")

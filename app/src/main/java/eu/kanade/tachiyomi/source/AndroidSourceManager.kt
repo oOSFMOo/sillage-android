@@ -105,6 +105,9 @@ class AndroidSourceManager(
                         val asura = eu.kanade.tachiyomi.ui.sillage.AsuraSource()
                         put(asura.id, asura)
                         registerStubSource(StubSource.from(asura))
+                        val japscan = eu.kanade.tachiyomi.ui.sillage.JapscanSource()
+                        put(japscan.id, japscan)
+                        registerStubSource(StubSource.from(japscan))
                         // SY <--
                     }
 
