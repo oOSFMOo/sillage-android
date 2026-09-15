@@ -4,9 +4,9 @@ Une bibliothèque de manhua et webtoons pour lire sur Android, sans dépendre d�
 
 ## Télécharger
 
-**[Télécharger la version Android 1.4](https://github.com/oOSFMOo/sillage-android/releases/tag/v1.4.0)**
+**[Télécharger la version Android 1.5](https://github.com/oOSFMOo/sillage-android/releases/tag/v1.5.0)**
 
-Dans les fichiers de la version, prends **Sillage-Android-1.4.apk**. Ouvre-le pour mettre à jour Sillage sans désinstaller l’application. Les extensions déjà installées restent utilisables. Depuis la version 1.2, **Plus → À propos → Vérifier les mises à jour de Sillage** permet de récupérer les prochaines versions depuis GitHub.
+Dans les fichiers de la version, prends **Sillage-Android-1.5.apk**. Ouvre-le pour mettre à jour Sillage sans désinstaller l’application. Les extensions déjà installées restent utilisables. Depuis la version 1.2, **Plus → À propos → Vérifier les mises à jour de Sillage** permet de récupérer les prochaines versions depuis GitHub.
 
 [Guide d’installation et de transfert de progression](INSTALLATION.md)
 

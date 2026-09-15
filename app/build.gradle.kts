@@ -31,8 +31,8 @@ android {
     defaultConfig {
         applicationId = "fr.sillage.reader"
 
-        versionCode = 1005
-        versionName = "1.4.0"
+        versionCode = 1006
+        versionName = "1.5.0"
 
         buildConfigField("String", "UPSTREAM_VERSION", """"0.20.1"""")
 

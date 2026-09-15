@@ -1,10 +1,10 @@
-# Sillage Android 1.4 — installation et mise à jour
+# Sillage Android 1.5 — installation et mise à jour
 
 Cette APK contient réellement l’interface Sillage et son catalogue. Elle fonctionne sur Android 8 ou plus récent, même lorsque le PC est éteint.
 
 ## Installer
 
-1. Ouvre **Sillage-Android-1.4.apk** sur le téléphone, puis accepte sa mise à jour. **Ne désinstalle pas Sillage** : la mise à jour conserve la bibliothèque, les réglages et la progression. Une sauvegarde complète dans Plus → Paramètres → Données et stockage reste conseillée avant toute mise à jour.
+1. Ouvre **Sillage-Android-1.5.apk** sur le téléphone, puis accepte sa mise à jour. **Ne désinstalle pas Sillage** : la mise à jour conserve la bibliothèque, les réglages et la progression. Une sauvegarde complète dans Plus → Paramètres → Données et stockage reste conseillée avant toute mise à jour.
 2. Sillage s’installe à côté de TachiyomiSY. Garde l’ancienne application pour transférer et vérifier ta progression.
 3. Au premier lancement, termine les étapes d’accueil (dossier de stockage et autorisations utiles). L’application s’ouvre ensuite sur **Catalogue**. Il est déjà inclus : aucun fichier « catalogue » à restaurer.
 4. Les extensions déjà installées sur le téléphone peuvent être réutilisées. Ouvre **Catalogue → Sources et résultats → Gérer les extensions**, puis vérifie qu’elles sont disponibles et approuvées. Pour une première installation, les cinq APK d’extensions restent disponibles dans le paquet de la version 1.0 sur GitHub : MangaFire, Vortex Scans, King of Shojo, ManhuaTop et Rolia Scan.
